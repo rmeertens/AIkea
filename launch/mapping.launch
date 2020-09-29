@@ -1,0 +1,26 @@
+<launch>
+  <include file="/home/nvidia/catkin_ws/src/freenect_stack/freenect_launch/launch/freenect.launch"></include>
+
+  
+<node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan_loader" args="image:=/camera/depth/image_raw"/>
+
+<!--
+<node pkg="tf" type="static_transform_publisher" name="robot_location" args="0 0 0 0 0 0 map base_link 100"></node>
+-->
+<node pkg="tf" type="static_transform_publisher" name="kinect_location_on_robot" args="0.2 0 0.2 0 0 0 base_link camera_depth_frame 100"></node>
+<node pkg="tf" type="static_transform_publisher" name="kinect_location_on_robot2" args="0.2 0 0.2 0 0 0 base_link camera_link 100"></node>
+<node pkg="tf" type="static_transform_publisher" name="kinect_location_on_robot3" args="0.2 0 0.2 0 0 0 base_link camera_rgb_frame 100"></node>
+<node pkg="tf" type="static_transform_publisher" name="kinect_location_on_robot4" args="0.2 0 0.2 0 0 0 base_link camera_rgb_optical_frame 100"></node>
+
+<node pkg="laser_scan_matcher" type="laser_scan_matcher_node" name="map_scans_for_transforms" args="_fixed_frame:=/odom"></node>
+<node pkg="gmapping" type="slam_gmapping" name="slam_gmapping">
+      <param name="particles" value="90"/> <!-- default is 30-->
+      <param name="srr" value="0.2"/> <!-- default is 0.1-->
+      <param name="srt" value="0.4"/> <!-- default is 0.2-->
+      <param name="str" value="0.2"/> <!-- default is 0.1-->
+      <param name="stt" value="0.4"/> <!-- default is 0.2-->
+</node>
+
+<!-- RVIZ for mapping visulisation -->
+<node pkg="rviz" type="rviz" name="rviz" args="-d /home/nvidia/catkin_ws/src/aikea/rviz_mapping.rviz"></node>
+</launch>

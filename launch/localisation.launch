@@ -1,0 +1,37 @@
+<launch>
+  <include file="/home/nvidia/catkin_ws/src/freenect_stack/freenect_launch/launch/freenect.launch"></include>
+
+  
+<node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan_loader" args="image:=/camera/depth/image_raw"/>
+
+<!--
+<node pkg="tf" type="static_transform_publisher" name="robot_location" args="0 0 0 0 0 0 map base_link 100"></node>
+-->
+<node pkg="tf" type="static_transform_publisher" name="kinect_location_on_robot" args="0.2 0 0.2 0 0 0 base_link camera_depth_frame 100"></node>
+<node pkg="tf" type="static_transform_publisher" name="kinect_location_on_robot2" args="0.2 0 0.2 0 0 0 base_link camera_link 100"></node>
+<node pkg="tf" type="static_transform_publisher" name="kinect_location_on_robot3" args="0.2 0 0.2 0 0 0 base_link camera_rgb_frame 100"></node>
+<node pkg="tf" type="static_transform_publisher" name="kinect_location_on_robot4" args="0.2 0 0.2 0 0 0 base_link camera_rgb_optical_frame 100"></node>
+
+<node pkg="laser_scan_matcher" type="laser_scan_matcher_node" name="map_scans_for_transforms" args="_fixed_frame:=/odom"></node>
+
+ <node pkg="amcl" type="amcl" name="amcl" output="screen">
+    <remap from="scan" to="/scan"/>
+    <param name="odom_frame_id" value="odom"/>
+
+    <param name="update_min_d" value="0.05"/>
+    <param name="initial_cov_xx" value="0.0625"/>
+    <param name="initial_cov_yy" value="0.0625"/>
+    <param name="initial_cov_aa" value="0.068"/>
+
+    <param name="odom_model_type" value="omni-corrected"/>
+
+
+<!--
+    <param name="base_frame_id" value="base_link"/>
+    <param name="update_min_a" value="0.2"/>
+    <param name="min_particles" value="500"/>-->
+  </node>
+
+<!-- RVIZ for mapping visulisation -->
+<node pkg="rviz" type="rviz" name="rviz" args="-d /home/nvidia/catkin_ws/src/aikea/rviz_mapping.rviz"></node>
+</launch>
